@@ -80,7 +80,7 @@ def action(msg):
     print('Received:', command)
 
     if command == '/hi':
-        telegram_bot.sendMessage (chat_id, str("Hi Matthew! What can I do for you?\n" + "/status - check status of washing machine\n" + "/weather - check weather data\n" + "/on - on the buzzer\n"
+        telegram_bot.sendMessage (chat_id, str("Hi Tom & Jerry! What can I do for you?\n" + "/status - check status of washing machine\n" + "/weather - check weather data\n" + "/on - on the buzzer\n"
                                                 + "/off - off the buzzer\n" + "/recent - the most recent time you have washed your clothes"))
 
     elif command == '/status':
