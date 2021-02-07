@@ -10,7 +10,7 @@ import MySQLdb.cursors
 import telepot
 from telepot.loop import MessageLoop
 
-import mysql.connector
+import mysql.connector as db
 import sys
 import re
 import picamera 
@@ -71,8 +71,125 @@ def buzzOff():
 
 @app.route("/")
 def index():
-    
     return render_template('login.html')
+
+@app.route("/readWeatherValuesAPI", methods = ['POST', 'GET'])
+def readWeatherValuesAPI():
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('select convert(pressure, char(50)) as pressure, convert(temperature, char(50)) as temperature, convert(humidity, char(50)) as humidity from weather order by id desc limit 1;')
+    values = cursor.fetchone()
+    return(values)
+
+# Update values in temperature graph
+@app.route("/updateTempGraphAPI", methods = ['POST','GET'])
+def updateTempGraphAPI():
+    
+    cnx = db.connect(user='iotuser', password='dmitiot', database='iotdatabase')
+    cursor = cnx.cursor()
+
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('select * from ( select timestamp from weather order by id desc limit 5) sub order by timestamp asc;')
+    rows = cursor.fetchall()
+    rows_values = [iter_item for iter_item in map(lambda item: ([item[key]
+                                        for key in item.keys()]), rows)]
+
+    # List for timestamp values
+    labels = list()
+    labels.append(rows_values[0])
+    labels.append(rows_values[1])
+    labels.append(rows_values[2])
+    labels.append(rows_values[3])
+    labels.append(rows_values[4])
+
+    cursor.execute('select convert(temperature, char(50)) as temperature from weather order by id desc limit 5;')
+    temp = cursor.fetchall()
+    temp_values = [iter_item for iter_item in map(lambda item: ([item[key]
+                                        for key in item.keys()]), temp)]
+
+    # List for temperature values
+    labels_2 = list()
+    labels_2.append(temp_values[0])
+    labels_2.append(temp_values[1])
+    labels_2.append(temp_values[2])
+    labels_2.append(temp_values[3])
+    labels_2.append(temp_values[4])
+   
+    data_dict = {'labels': labels, 'labels_2': labels_2}
+    return(data_dict)
+
+# Uppdate values in humidity graph
+@app.route("/updateHumidityGraphAPI", methods = ['POST','GET'])
+def updateHumidityGraphAPI():
+
+    cnx = db.connect(user='iotuser', password='dmitiot', database='iotdatabase')
+    cursor = cnx.cursor()
+    # retrieve data
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('select * from ( select timestamp from weather order by id desc limit 5) sub order by timestamp asc;')
+    rows = cursor.fetchall()
+    rows_values = [iter_item for iter_item in map(lambda item: ([item[key]
+                                        for key in item.keys()]), rows)]
+    # List for timestamp values
+    labels = list()
+    labels.append(rows_values[0])
+    labels.append(rows_values[1])
+    labels.append(rows_values[2])
+    labels.append(rows_values[3])
+    labels.append(rows_values[4])
+
+    cursor.execute('select convert(humidity, char(50)) as humidity from weather order by id desc limit 5;')
+    hum = cursor.fetchall()
+    hum_values = [iter_item for iter_item in map(lambda item: ([item[key]
+                                        for key in item.keys()]), hum)]
+    labels_3 = list()
+    labels_3.append(hum_values[0])
+    labels_3.append(hum_values[1])
+    labels_3.append(hum_values[2])
+    labels_3.append(hum_values[3])
+    labels_3.append(hum_values[4])
+
+    data_dict = {'labels': labels, 'labels_3': labels_3}
+    return(data_dict)
+
+
+# Update values in pressure graph
+@app.route("/updatePressureGraphAPI", methods = ['POST','GET'])
+def updatePressureGraphAPI():
+
+    cnx = db.connect(user='iotuser', password='dmitiot', database='iotdatabase')
+    cursor = cnx.cursor()
+
+    # retrieve data
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('select * from ( select timestamp from weather order by id desc limit 5) sub order by timestamp asc;')
+    rows = cursor.fetchall()
+    rows_values = [iter_item for iter_item in map(lambda item: ([item[key]
+                                        for key in item.keys()]), rows)]
+
+    # List for timestamp values
+    labels = list()
+    labels.append(rows_values[0])
+    labels.append(rows_values[1])
+    labels.append(rows_values[2])
+    labels.append(rows_values[3])
+    labels.append(rows_values[4])
+
+    cursor.execute('select convert(pressure, char(50)) as pressure from weather order by id desc limit 5;')
+    press = cursor.fetchall()
+    press_values = [iter_item for iter_item in map(lambda item: ([item[key]
+                                        for key in item.keys()]), press)]
+    
+    # List for pressure values
+    labels_4 = list()
+    labels_4.append(press_values[0])
+    labels_4.append(press_values[1])
+    labels_4.append(press_values[2])
+    labels_4.append(press_values[3])
+    labels_4.append(press_values[4])
+
+    data_dict = {'labels': labels, 'labels_4': labels_4}
+    return(data_dict)
+
 
 @app.route('/index.html', methods = ['POST', 'GET'])
 def reindex():
@@ -83,9 +200,9 @@ def reindex():
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM weather ORDER BY id DESC LIMIT 1')
         values = cursor.fetchone()
-        print(values)
 
-        cursor.execute('SELECT timestamp FROM weather ORDER BY id DESC LIMIT 5')
+  
+        cursor.execute('select * from ( select timestamp from weather order by id desc limit 5) sub order by timestamp asc;')
         rows = cursor.fetchall()
         rows_values = [iter_item for iter_item in map(lambda item: ([item[key]
                                           for key in item.keys()]), rows)]
@@ -108,7 +225,6 @@ def reindex():
         labels_2.append(temp_values[3])
         labels_2.append(temp_values[4])
       
-        print(labels_2)
 
         cursor.execute('select convert(humidity, char(50)) as humidity from weather order by id desc limit 5;')
         hum = cursor.fetchall()
@@ -120,7 +236,6 @@ def reindex():
         labels_3.append(hum_values[2])
         labels_3.append(hum_values[3])
         labels_3.append(hum_values[4])
-        print(labels_3)
 
         cursor.execute('select convert(pressure, char(50)) as pressure from weather order by id desc limit 5;')
         press = cursor.fetchall()
@@ -132,7 +247,6 @@ def reindex():
         labels_4.append(press_values[2])
         labels_4.append(press_values[3])
         labels_4.append(press_values[4])
-        print(labels_4)
 
         return render_template('index.html', email=session['email'], values=values, labels=labels, labels_2=labels_2, labels_3=labels_3, labels_4=labels_4)
 

@@ -15,6 +15,79 @@
 
     <title>Easion - Bootstrap Dashboard Template</title>
 
+    <script>
+
+        function getData() {
+            jQuery.ajax({
+                url: "/readWeatherValuesAPI",
+                type: "POST",
+                success: function (ndata, textStatus, xhr) {
+                    // console.log(ndata)
+                    $('#temperature').html(ndata.temperature + "\u00B0C");
+                    $('#humidity').html(ndata.humidity + "RH");
+                    $('#pressure').html(ndata.pressure + "Pa");
+        
+                } //end of 1st success
+            }); //end of 1st ajax
+        };
+
+        $(document).ready(function () {
+            setInterval(function () {
+                getData();
+            }, 5000);
+        });
+
+
+        function updateTempGraph() {
+            jQuery.ajax({
+                url: "/updateTempGraphAPI",
+                type: "POST",
+                success: function (ndata, textStatus, xhr) {
+                    console.log(ndata);
+                    labels = ndata.labels;
+                    labels_2 = ndata.labels_2;
+                    myChart_temp.data.labels = labels;
+                    myChart_temp.data.datasets[0].data = labels_2;
+                    myChart_temp.update();
+                }
+
+            })
+        };
+
+        function updateHumidityGraph() {
+            jQuery.ajax({
+                url: "/updateHumidityGraphAPI",
+                type: "POST",
+                success: function (ndata, textStatus, xhr) {
+                    console.log(ndata);
+                    labels = ndata.labels;
+                    labels_3 = ndata.labels_3;
+                    myChart_hum.data.labels = labels;
+                    myChart_hum.data.datasets[0].data = labels_3;
+                    myChart_hum.update();
+                }
+
+            })
+        };
+
+        function updatePressureGraph() {
+            jQuery.ajax({
+                url: "/updatePressureGraphAPI",
+                type: "POST",
+                success: function (ndata, textStatus, xhr) {
+                    // console.log(ndata);
+                    labels = ndata.labels;
+                    labels_4 = ndata.labels_4;
+                    myChart_press.data.labels = labels;
+                    myChart_press.data.datasets[0].data = labels_4;
+                    myChart_press.update();
+                }
+
+            })
+        };
+
+      
+    </script>
 
 
 
@@ -87,7 +160,7 @@
                                             <span class="stats-percentage">+25%</span>
                                             <span class="stats-timeframe">from last month</span>
                                         </div> -->
-                                        <div class="stats-number">{{ values.temperature }} °C</div>
+                                        <div class="stats-number" id='temperature'>{{ values.temperature }} °C</div>
                                     </div>
                                 </div>
                             </div>
@@ -105,7 +178,7 @@
                                             <span class="stats-percentage">+17.5%</span>
                                             <span class="stats-timeframe">from last month</span>
                                         </div> -->
-                                        <div class="stats-number">{{ values.humidity }} RH</div>
+                                        <div class="stats-number" id='humidity'>{{ values.humidity }} RH</div>
                                     </div>
                                 </div>
                             </div>
@@ -118,60 +191,60 @@
                                         <i class="fas fa-wind"></i>
                                     </div>
                                     <div class="stats-data">
-                                        <div class="stats-number">{{ values.pressure }} Pa</div>
+                                        <div class="stats-number" id="pressure">{{ values.pressure }} Pa</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                
 
-                <div class="row">
+
+                    <div class="row">
                         <div class="col-xl-6">
-                                <div class="card easion-card">
-                                    <div class="card-header">
-                                        <div class="easion-card-icon">
-                                            <i class="fas fa-chart-bar"></i>
-                                        </div>
-                                        <div class="easion-card-title"> Temperature Graph </div>
-                                        <div class="easion-card-menu">
-                                            <div class="dropdown show">
-                                                <a class="easion-card-menu-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                </a>
-                                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                                    <a class="dropdown-item" href="#">Action</a>
-                                                    <a class="dropdown-item" href="#">Another action</a>
-                                                    <a class="dropdown-item" href="#">Something else here</a>
-                                                </div>
+                            <div class="card easion-card">
+                                <div class="card-header">
+                                    <div class="easion-card-icon">
+                                        <i class="fas fa-chart-bar"></i>
+                                    </div>
+                                    <div class="easion-card-title"> Temperature Graph </div>
+                                    <div class="easion-card-menu">
+                                        <div class="dropdown show">
+                                            <a class="easion-card-menu-link" href="#" role="button"
+                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-right"
+                                                aria-labelledby="dropdownMenuLink">
+                                                <a class="dropdown-item" onclick="updateTempGraph()">Update Graph</a>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="card-body easion-card-body-chart">
-                                        <canvas id="easionChartjsLine"></canvas>
-                                        <script>
-                                            var ctx = document.getElementById("easionChartjsLine").getContext('2d');
-                                            var myChart = new Chart(ctx, {
-                                                type: 'line',
-                                                data: {
-                                                    labels: {{labels|tojson}},
-                                                    datasets: [{
-                                                        label: 'Red',
-                                                        data: {{labels_2|tojson}},
-                                                        backgroundColor: window.chartColors.danger,
-                                                        borderColor: window.chartColors.danger,
-                                                        fill: false
-                                                    }]
-                                                },
+                                </div>
+                                <div class="card-body easion-card-body-chart">
+                                    <canvas id="easionChartjsLine"></canvas>
+                                    <script>
+                                        var ctx = document.getElementById("easionChartjsLine").getContext('2d');
+                                        var myChart_temp = new Chart(ctx, {
+                                            type: 'line',
+                                            data: {
+                                                labels: {{ labels| tojson}},
+                                                datasets: [{
+                                                    label: 'Red',
+                                                    data: {{ labels_2| tojson}},
+                                                    backgroundColor: window.chartColors.danger,
+                                                    borderColor: window.chartColors.danger,
+                                                    fill: false
+                                                            }]
+                                                        },
                                                 options: {
                                                     legend: {
                                                         display: false
                                                     }
                                                 }
-                                            });
-                                        </script>
-                                    </div>
+                                        });
+                                    </script>
                                 </div>
                             </div>
+                        </div>
                         <div class="col-xl-6">
                             <div class="card easion-card">
                                 <div class="card-header">
@@ -181,12 +254,12 @@
                                     <div class="easion-card-title"> Humidity Graph </div>
                                     <div class="easion-card-menu">
                                         <div class="dropdown show">
-                                            <a class="easion-card-menu-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <a class="easion-card-menu-link" href="#" role="button"
+                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             </a>
-                                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                                <a class="dropdown-item" href="#">Action</a>
-                                                <a class="dropdown-item" href="#">Another action</a>
-                                                <a class="dropdown-item" href="#">Something else here</a>
+                                            <div class="dropdown-menu dropdown-menu-right"
+                                                aria-labelledby="dropdownMenuLink">
+                                                <a class="dropdown-item" onclick="updateHumidityGraph()">Update Graph</a>
                                             </div>
                                         </div>
                                     </div>
@@ -195,30 +268,30 @@
                                     <canvas id="easionChartjsLine2"></canvas>
                                     <script>
                                         var ctx = document.getElementById("easionChartjsLine2").getContext('2d');
-                                        var myChart = new Chart(ctx, {
+                                        var myChart_hum = new Chart(ctx, {
                                             type: 'line',
                                             data: {
-                                                labels: {{labels|tojson}},
+                                                labels: {{ labels| tojson}},
                                                 datasets: [{
                                                     label: 'Blue',
-                                                    data: {{labels_3|tojson}},
+                                                    data: {{ labels_3| tojson}},
                                                     backgroundColor: window.chartColors.primary,
                                                     borderColor: window.chartColors.primary,
                                                     fill: false
-                                                }]
-                                            },
-                                            options: {
-                                                legend: {
-                                                    display: false
+                                                        }]
+                                                    },
+                                                options: {
+                                                    legend: {
+                                                        display: false
+                                                    }
                                                 }
-                                            }
                                         });
                                     </script>
                                 </div>
                             </div>
                         </div>
                     </div>
-                <div class="card easion-card">
+                    <div class="card easion-card">
                         <div class="card-header">
                             <div class="easion-card-icon">
                                 <i class="fas fa-chart-bar"></i>
@@ -226,12 +299,11 @@
                             <div class="easion-card-title"> Pressure Graph </div>
                             <div class="easion-card-menu">
                                 <div class="dropdown show">
-                                    <a class="easion-card-menu-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <a class="easion-card-menu-link" href="#" role="button" data-toggle="dropdown"
+                                        aria-haspopup="true" aria-expanded="false">
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                        <a class="dropdown-item" href="#">Action</a>
-                                        <a class="dropdown-item" href="#">Another action</a>
-                                        <a class="dropdown-item" href="#">Something else here</a>
+                                        <a class="dropdown-item" onclick="updatePressureGraph()">Update Graph</a>
                                     </div>
                                 </div>
                             </div>
@@ -240,39 +312,39 @@
                             <canvas id="easionChartjsLine3"></canvas>
                             <script>
                                 var ctx = document.getElementById("easionChartjsLine3").getContext('2d');
-                                var myChart = new Chart(ctx, {
+                                var myChart_press = new Chart(ctx, {
                                     type: 'line',
                                     data: {
-                                        labels: {{labels|tojson}},
+                                        labels: {{ labels| tojson}},
                                         datasets: [{
                                             label: 'Green',
-                                            data: {{labels_4|tojson}},
+                                            data: {{ labels_4| tojson}},
                                             borderColor: 'rgba(38, 166, 91, 1)',
                                             fill: false
-                                        }]
-                                    },
-                                    options: {
-                                        legend: {
-                                            display: false
+                                                }]
+                                            },
+                                        options: {
+                                            legend: {
+                                                display: false
+                                            }
                                         }
-                                    }
                                 });
                             </script>
                         </div>
                     </div>
                 </div>
-                       
+
             </main>
-            
 
-                
 
-                
+
+
+
         </div>
 
     </div>
-    
-    
+
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
         integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
         crossorigin="anonymous"></script>
