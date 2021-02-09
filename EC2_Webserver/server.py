@@ -3,14 +3,11 @@ from flask import Flask, render_template, jsonify, request, Response, redirect, 
 from gpiozero import Buzzer
 from time import sleep
 
-from flask_mysqldb import MySQL
 from flask import Markup
-import MySQLdb.cursors
 
 import telepot
 from telepot.loop import MessageLoop
 
-import mysql.connector as db
 import sys
 import re
 import picamera 
