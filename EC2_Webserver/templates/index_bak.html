@@ -17,74 +17,74 @@
 
     <script>
 
-        function getData() {
-            jQuery.ajax({
-                url: "/readWeatherValuesAPI",
-                type: "POST",
-                success: function (ndata, textStatus, xhr) {
-                    console.log(ndata)
-                    $('#temperature').html(ndata.Temperature + "\u00B0C");
-                    $('#humidity').html(ndata.Humidity + "RH");
-                    $('#pressure').html(ndata.Pressure + "Pa");
+        // function getData() {
+        //     jQuery.ajax({
+        //         url: "/readWeatherValuesAPI",
+        //         type: "POST",
+        //         success: function (ndata, textStatus, xhr) {
+        //             // console.log(ndata)
+        //             $('#temperature').html(ndata.temperature + "\u00B0C");
+        //             $('#humidity').html(ndata.humidity + "RH");
+        //             $('#pressure').html(ndata.pressure + "Pa");
         
-                } //end of 1st success
-            }); //end of 1st ajax
-        };
+        //         } //end of 1st success
+        //     }); //end of 1st ajax
+        // };
 
-        $(document).ready(function () {
-            setInterval(function () {
-                getData();
-            }, 5000);
-        });
+        // $(document).ready(function () {
+        //     setInterval(function () {
+        //         getData();
+        //     }, 5000);
+        // });
 
 
-        function updateTempGraph() {
-            jQuery.ajax({
-                url: "/updateTempGraphAPI",
-                type: "POST",
-                success: function (ndata, textStatus, xhr) {
-                    console.log(ndata);
-                    labels = ndata.labels;
-                    labels_2 = ndata.labels_2;
-                    myChart_temp.data.labels = labels;
-                    myChart_temp.data.datasets[0].data = labels_2;
-                    myChart_temp.update();
-                }
+        // function updateTempGraph() {
+        //     jQuery.ajax({
+        //         url: "/updateTempGraphAPI",
+        //         type: "POST",
+        //         success: function (ndata, textStatus, xhr) {
+        //             console.log(ndata);
+        //             labels = ndata.labels;
+        //             labels_2 = ndata.labels_2;
+        //             myChart_temp.data.labels = labels;
+        //             myChart_temp.data.datasets[0].data = labels_2;
+        //             myChart_temp.update();
+        //         }
 
-            })
-        };
+        //     })
+        // };
 
-        function updateHumidityGraph() {
-            jQuery.ajax({
-                url: "/updateHumidityGraphAPI",
-                type: "POST",
-                success: function (ndata, textStatus, xhr) {
-                    console.log(ndata);
-                    labels = ndata.labels;
-                    labels_3 = ndata.labels_3;
-                    myChart_hum.data.labels = labels;
-                    myChart_hum.data.datasets[0].data = labels_3;
-                    myChart_hum.update();
-                }
+        // function updateHumidityGraph() {
+        //     jQuery.ajax({
+        //         url: "/updateHumidityGraphAPI",
+        //         type: "POST",
+        //         success: function (ndata, textStatus, xhr) {
+        //             console.log(ndata);
+        //             labels = ndata.labels;
+        //             labels_3 = ndata.labels_3;
+        //             myChart_hum.data.labels = labels;
+        //             myChart_hum.data.datasets[0].data = labels_3;
+        //             myChart_hum.update();
+        //         }
 
-            })
-        };
+        //     })
+        // };
 
-        function updatePressureGraph() {
-            jQuery.ajax({
-                url: "/updatePressureGraphAPI",
-                type: "POST",
-                success: function (ndata, textStatus, xhr) {
-                    console.log(ndata);
-                    labels = ndata.labels;
-                    labels_4 = ndata.labels_4;
-                    myChart_press.data.labels = labels;
-                    myChart_press.data.datasets[0].data = labels_4;
-                    myChart_press.update();
-                }
+        // function updatePressureGraph() {
+        //     jQuery.ajax({
+        //         url: "/updatePressureGraphAPI",
+        //         type: "POST",
+        //         success: function (ndata, textStatus, xhr) {
+        //             // console.log(ndata);
+        //             labels = ndata.labels;
+        //             labels_4 = ndata.labels_4;
+        //             myChart_press.data.labels = labels;
+        //             myChart_press.data.datasets[0].data = labels_4;
+        //             myChart_press.update();
+        //         }
 
-            })
-        };
+        //     })
+        // };
 
       
     </script>
@@ -160,7 +160,7 @@
                                             <span class="stats-percentage">+25%</span>
                                             <span class="stats-timeframe">from last month</span>
                                         </div> -->
-                                        <div class="stats-number" id='temperature'>{{ values.Temperature }} °C</div>
+                                        <!-- <div class="stats-number" id='temperature'>{{ values.temperature }} °C</div> -->
                                     </div>
                                 </div>
                             </div>
@@ -178,7 +178,7 @@
                                             <span class="stats-percentage">+17.5%</span>
                                             <span class="stats-timeframe">from last month</span>
                                         </div> -->
-                                        <div class="stats-number" id='humidity'>{{ values.Humidity }} RH</div>
+                                        <!-- <div class="stats-number" id='humidity'>{{ values.humidity }} RH</div> -->
                                     </div>
                                 </div>
                             </div>
@@ -191,14 +191,14 @@
                                         <i class="fas fa-wind"></i>
                                     </div>
                                     <div class="stats-data">
-                                        <div class="stats-number" id="pressure">{{ values.Pressure }} Pa</div>
+                                        <!-- <div class="stats-number" id="pressure">{{ values.pressure }} Pa</div> -->
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-
+<!--
                     <div class="row">
                         <div class="col-xl-6">
                             <div class="card easion-card">
@@ -333,7 +333,7 @@
                         </div>
                     </div>
                 </div>
-           
+            -->
             </main>
 
 

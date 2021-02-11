@@ -5,7 +5,6 @@ import datetime
 from datetime import date, datetime, timedelta
 import time
 from time import sleep
-import mysql.connector
 from rpi_lcd import LCD
 import json
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
@@ -22,10 +21,6 @@ pin = 19
 
 # Grab weather values
 degree = u"\u00b0"
-
-# Set datetime string
-now = datetime.now()
-dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
 
 # Custom MQTT message callback
 def customCallback(client, userdata, message):
@@ -93,6 +88,10 @@ def main():
         loopCount = last_id
 
     while True:
+        # Set datetime string
+        now = datetime.now()
+        dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+
         humidity, temperature = Adafruit_DHT.read_retry(11, pin)
         presBMP = bmp180Sensor.read_pressure() # absolute pressure in hPa
         print('DHT11 Sensor Readings:')
@@ -111,7 +110,6 @@ def main():
         message["Humidity"] = humidity
         message["Pressure"] = presBMP
         message["Timestamp"] = dt_string  
-        print(message)
 
         my_rpi.publish("smart_appliance/weather", json.dumps(message), 1)
 

@@ -32,7 +32,7 @@
     <script>
         function turnon() {
             $.ajax({
-                url: "writeLED/On",
+                url: "controlAlertAPI/On",
                 success: function(result) {
                     $("#ledstatus").html(result);
                 }
@@ -41,7 +41,7 @@
 
         function turnoff() {
             $.ajax({
-                url: "writeLED/Off",
+                url: "controlAlertAPI/Off",
                 success: function(result) {
                     $("#ledstatus").html(result);
                 }
@@ -181,7 +181,6 @@
                         </div>
                     </div>
                     <h1>Raspberry Pi - Surveillance Camera</h1>
-                    <img src="{{ url_for('video_feed') }}">
                 </div>
             </main>
         </div>
