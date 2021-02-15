@@ -396,10 +396,10 @@ def washing_machine():
     data_2 = items[:n]
     last_run = data_2[0]
 
-    # store "stopped" id as initial value for comparison with readWashingValuesAPI
-    global stopped_status_id 
-    stopped_status_id = data[0]["id"]
-    print(stopped_status_id)
+    # # store "stopped" id as initial value for comparison with readWashingValuesAPI
+    # global stopped_status_id 
+    # stopped_status_id = data[0]["id"]
+    # print(stopped_status_id)
 
     return render_template('content_2.html', status=status, last_run=last_run, minutes=minutes, seconds=seconds)
 
@@ -449,21 +449,21 @@ def readWashingValuesAPI():
     data_2 = items[:n]
     last_run_values = data_2[0]["timestamp"]
 
-    # check if washing status is stopped, if so sound the buzzer
-    if status_value == "stopped":
-        global stopped_status_id
-        print(stopped_status_id)
+    # # check if washing status is stopped, if so sound the buzzer
+    # if status_value == "stopped":
+    #     global stopped_status_id
+    #     print(stopped_status_id)
 
-        # compare ID
-        current_id = status_value[0]["id"]
-        print(current_id)
+    #     # compare ID
+    #     current_id = status_value[0]["id"]
+    #     print(current_id)
 
-        if current_id == stopped_status_id:
-            buzzOff()
+    #     if current_id == stopped_status_id:
+    #         buzzOff()
 
-        else:
-            buzzOn()
-            stopped_status_id = current_id
+    #     else:
+    #         buzzOn()
+    #         stopped_status_id = current_id
             
 
     data_dict = {"status": status_value, "minutes": str(minutes), "seconds":str(seconds), "last_run": last_run_values}
@@ -471,13 +471,18 @@ def readWashingValuesAPI():
 
 @app.route("/controlAlertAPI/<status>", methods = ['POST', 'GET'])
 def controlAlertAPI(status):
+    if status == 'On':
+        message = {}
+        message['buzzerControl'] = "On"
+        my_rpi.publish("smart_appliance/remotecontrol", json.dumps(message), 1)
+        return status
+    else:
+        message = {}
+        message['buzzerControl'] = "Off"
+        my_rpi.publish("smart_appliance/remotecontrol", json.dumps(message), 1)
+        return status
 
-   if status == 'On':
-        url_req = "112.199.135.190:8005"
-        requests.get(url_req)
-   else:
-        url_req = "112.199.135.190:8005"
-        requests.get(url_req)
+    
 
 
 # @app.route('/video_feed')

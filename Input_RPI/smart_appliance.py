@@ -43,25 +43,11 @@ degree = u"\u00b0"
 # Initialise buzzer
 buzzer = Buzzer(5)
 
-def buzzOn():
-    while True:
-        buzzer.on()
-        return "On"
-
-def buzzOff():
-    while True:
-        buzzer.off()
-        return "Off"
-
 # AWS Credentials
 host = "adbw525tlam09-ats.iot.us-east-1.amazonaws.com"
 rootCAPath = "input-AmazonRootCA1.pem"
 certificatePath = "input-certificate.pem.crt"
 privateKeyPath = "input-private.pem.key"
-
-# # Set the keys for the DynamoDB Tables
-# washing_machine_message_keys = ["deviceid", "id", "Duration", "Status", "Timestamp"]
-# weather_keys = ["deviceid", "id", "Temperature", "Humdity", "Pressure", "Timestamp"]
 
 # AWS Configuration
 my_rpi = AWSIoTMQTTClient("Smart_Appliance_RPI_Input")
@@ -173,9 +159,15 @@ def action(msg):
 
     elif command == '/on':
         buzzOn()
+        message = {}
+        message['buzzerControl'] = "On"
+        my_rpi.publish("smart_appliance/remotecontrol", json.dumps(message), 1)
 
     elif command == '/off':
         buzzOff()
+        message = {}
+        message['buzzerControl'] = "Off"
+        my_rpi.publish("smart_appliance/remotecontrol", json.dumps(message), 1)
 
 def main():
     # try:
@@ -252,13 +244,15 @@ def main():
 
         my_rpi.publish("smart_appliance/washing_machine", json.dumps(washing_machine_message), 1)
 
+        global TIME
+        TIME = 0
         # Secondary program circuit, checks every 3 minutes for vibrations during this time. 
         # If no vibration for the last 3 minutes, cycle considered done.
         while going: 
             loopCount = loopCount + 1
             logging.info("  Inner loop iteration")
             time.sleep(DELAYINSECS)
-            global TIME
+            
             TIME = TIME+90
             print("The washing machine is operating for the past {:d} seconds".format(TIME))
             logging.info("  Just slept %ds", DELAYINSECS)
