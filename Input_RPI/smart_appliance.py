@@ -20,6 +20,10 @@ try:
     import json
     import boto3
     from boto3.dynamodb.conditions import Key, Attr
+    import io
+    from PIL import Image
+    import os
+    from picamera import PiCamera
 except RuntimeError:
     print("Error loading RPi.GPIO")
 
@@ -31,9 +35,14 @@ dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
 # Set global variables
 DELAYINSECS = 90 # Time in seconds before declaring end of cycle (1 min 30s)
 TIME = 0
+WM_INDICATOR = ""
+bot_token = '1434600515:AAEPBZLdWkF5cEbaug7QH18jWNgltUw60mQ'
+bot_chatID = '601592207'
+user = ""
 
 # Define RPi input/output pins
 BUTTON = 13
+CAMERA_BUTTON = 5
 LED = 18
 VIBRATION = 17
 
@@ -69,8 +78,6 @@ def customCallback(client, userdata, message):
 
 # Function to send push notification with pushover.net
 def pushdone(bot_message):
-    bot_token = '1434600515:AAEPBZLdWkF5cEbaug7QH18jWNgltUw60mQ'
-    bot_chatID = '601592207'
     send_text = 'https://api.telegram.org/bot' + bot_token + '/sendMessage?chat_id=' + bot_chatID + '&parse_mode=Markdown&text=' + bot_message
     response = requests.get(send_text)
     return response.json()
@@ -169,6 +176,83 @@ def action(msg):
         message['buzzerControl'] = "Off"
         my_rpi.publish("smart_appliance/remotecontrol", json.dumps(message), 1)
 
+
+
+# Function for taking picture
+def takePhoto(file_path,file_name):
+    with PiCamera() as camera:
+        camera.resolution = (1024, 768)
+        full_path = file_path + "/" + file_name
+        camera.capture(full_path)
+        sleep(3)
+
+def faceMap(image_path):
+    rekognition = boto3.client('rekognition', region_name='us-east-1')
+    dynamodb = boto3.client('dynamodb', region_name='us-east-1')
+        
+    image = Image.open(image_path)
+    stream = io.BytesIO()
+    image.save(stream,format="JPEG")
+    image_binary = stream.getvalue()
+    response = rekognition.search_faces_by_image(
+        CollectionId='family_collection',
+        Image={'Bytes':image_binary}                                       
+        )
+
+    for match in response['FaceMatches']:
+        print (match['Face']['FaceId'],match['Face']['Confidence'])
+            
+        face = dynamodb.get_item(
+            TableName='family_collection',  
+            Key={'RekognitionId': {'S': match['Face']['FaceId']}}
+            )
+        
+        if 'Item' in face:
+            print (face['Item']['FullName']['S'])
+            global user
+            user = face['Item']['FullName']['S']
+        else:
+            print ('no match found in person lookup')
+
+def faceDetectionButton():
+    #GPIO SETUP
+    GPIO.setwarnings(False)
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(CAMERA_BUTTON, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+
+    def button_callback(CAMERA_BUTTON):
+        # check if washing machine program has stopped, if so perform the following.
+        try:
+            global WM_INDICATOR
+            status_value = WM_INDICATOR  
+            if status_value == "stop":
+                # Set the filename and bucket name
+                BUCKET = 'smart-appliance-bucket'
+                location = {'LocationConstraint': 'us-east-1'}
+                file_path = os.getcwd()
+                file_name = "/image.jpeg"
+                print("Taking picture and uploading to Rekognition...SAY CHEESE!")
+                takePhoto(file_path, file_name)
+                faceMap(file_path + file_name)
+                
+                # Sending photo to telegram bot
+                telegram_bot.sendPhoto(bot_chatID, photo=open(file_path + file_name, 'rb'))
+                text = "%s is taking out the laundry" % user
+                pushdone(text)
+
+                os.remove(file_path + file_name)
+                # reset the indicator
+                WM_INDICATOR = "" 
+
+        except KeyError:
+            pass
+    
+    try:
+        # check if button is pushed, if so run the button_callback function
+        GPIO.add_event_detect(CAMERA_BUTTON,GPIO.RISING,callback=button_callback)
+    except KeyboardInterrupt: 
+        GPIO.cleanup()
+
 def main():
     # try:
     MessageLoop(telegram_bot, action).run_as_thread()
@@ -196,6 +280,9 @@ def main():
     logging.info("****************************")
     stop = False
     logging.info("Entering main loop")
+    
+    # Call the face-mapping functiion
+    faceDetectionButton()
 
     # Retrieve the last ID from "Smart_Appliance_Washing_Machine" Table and set the current loopCount
     dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
@@ -290,6 +377,8 @@ def main():
                 washing_machine_message["status"] = 'stop'
                 washing_machine_message["timestamp"] = dt_string
                 my_rpi.publish("smart_appliance/washing_machine", json.dumps(washing_machine_message), 1)
+                global WM_INDICATOR
+                WM_INDICATOR = "stop"
 
         logging.debug(" End of iteration")
 
