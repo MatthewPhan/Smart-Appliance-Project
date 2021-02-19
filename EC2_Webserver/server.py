@@ -17,6 +17,8 @@ import json
 import numpy
 import datetime
 import decimal
+import random
+import string
 
 import time
 import httplib
@@ -36,12 +38,6 @@ import boto3
 from boto3.dynamodb.conditions import Key, Attr
 
 gevent.monkey.patch_all()  
-
-# # import camera driver
-# if os.environ.get('CAMERA'):
-#     Camera = import_module('camera_' + os.environ['CAMERA']).Camera
-# else:
-#     from camera import Camera
 
 app = Flask(__name__)
 
@@ -65,43 +61,91 @@ my_rpi.configureMQTTOperationTimeout(5)  # 5 sec
 
 my_rpi.connect()
 
+# Set the keys for the DynamoDB Tables & Global Variables
+weather_dict = {}
+wm_dict = {}
 
-def buzzOn():
-    while True:
-        buzzer.on()
-        return "On"
+# Custom MQTT message callback and populate data
+def customCallback(client, userdata, message):
+    print("Received a new message from 'smart_appliance/+': ")
+    print(message.payload)
+    print("from topic: ")
+    print(message.topic)
+    print("--------------\n\n")
+    global weather_dict
 
-def buzzOff():
-    while True:
-        buzzer.off()
-        return "Off"        
+    # Handle weather values
+    try:
+        data = json.loads(message.payload)
+        if data['Temperature'] == None:
+            weather_dict['Temperature'] = 0
+        else:
+            weather_dict['Temperature'] = int(data['Temperature'])
+    
+        if data['Humidity'] == None:
+            weather_dict['Humidity'] = 0
+        else:
+            weather_dict['Humidity'] = int(data['Humidity'])
+            
+        if data['Pressure'] == None:
+            weather_dict['Pressure'] = 0
+        else:
+            weather_dict['Pressure'] = int(data['Pressure'])
+        print(weather_dict)
+    except KeyError:
+        weather_dict['Temperature'] = 0
+        weather_dict['Humidity'] = 0
+        weather_dict['Pressure'] = 0
+        print(weather_dict)
+    
+    # Handle washing_machine values
+    try:
+        data = json.loads(message.payload)
+        wm_dict['id'] = data['id']
+        wm_dict['status'] = data['status']
+        print(wm_dict)
+    except KeyError:
+        pass
 
 @app.route("/")
 def index():
     return render_template('login.html')
 
+
 @app.route("/readWeatherValuesAPI", methods = ['POST', 'GET'])
 def readWeatherValuesAPI():
-    dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
-    table = dynamodb.Table('Smart_Appliance_Weather')
-    response = table.query(
-        KeyConditionExpression=Key('deviceid').eq('weather_id'),
+    # dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+    # table = dynamodb.Table('Smart_Appliance_Weather')
+    # response = table.query(
+    #     KeyConditionExpression=Key('deviceid').eq('weather_id'),
                                 
-        ScanIndexForward=False
-    )
+    #     ScanIndexForward=False
+    # )
 
-    items = response['Items']
-    n=1
-    data = items[:n]
-    current_dict = {}
+    # items = response['Items']
+    # n=1
+    # data = items[:n]
+    # current_dict = {}
 
-    current_temp = data[0]["Temperature"]
-    current_hum = data[0]["Humidity"]
-    current_press = data[0]["Pressure"]
+    # current_temp = data[0]["Temperature"]
+    # current_hum = data[0]["Humidity"]
+    # current_press = data[0]["Pressure"]
 
-    current_dict = {'Temperature': str(current_temp), 'Humidity': str(current_hum), 'Pressure': str(current_press)}
+    # current_dict = {'Temperature': str(current_temp), 'Humidity': str(current_hum), 'Pressure': str(current_press)}
+    
+    # return(jsonify(current_dict))
 
-    return(jsonify(current_dict))
+    try:
+        # try to access the values
+        global weather_dict
+        temperature = weather_dict['Temperature']
+        hum = weather_dict['Humidity']
+        pressure = weather_dict['Pressure']
+        return(jsonify(weather_dict))
+    except KeyError:
+        # if no data is published, output all 0
+        weather_dict = {'Temperature': 0, 'Humidity': 0, 'Pressure': 0}
+        return(jsonify(weather_dict))
 
 
 # Update values in temperature graph
@@ -136,6 +180,7 @@ def updateTempGraphAPI():
 
     data_dict = {'labels': labels, 'labels_2': labels_2}
     return(jsonify(data_dict))
+
 
 # Uppdate values in humidity graph
 @app.route("/updateHumidityGraphAPI", methods = ['POST','GET'])
@@ -321,6 +366,7 @@ def register():
     # Show registration form with message (if any)
     return render_template('forms.html', msg=msg)
 
+
 @app.route('/login.html', methods=['GET', 'POST'])
 def login():
     msg = '' 
@@ -354,6 +400,64 @@ def login():
             # Account doesnt exist or username/password incorrect
             msg = 'Incorrect email/password!'
             return render_template('login.html', msg=msg)
+
+
+# forget-password.html
+@app.route('/forget-password.html')
+def forgotPassword():
+    return render_template('forget-password.html')
+
+
+# forgetPasswordAPI to change user password 
+@app.route('/forgetPasswordAPI', methods=['GET', 'POST'])
+def forgetPasswordAPI():
+    msg = ''
+    # Check if requests exist and "username" (user submitted form)
+    if request.method == 'POST' and 'email' in request.form:
+        # Create variables for easy access
+        email = request.form['email']
+
+        dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+        table = dynamodb.Table('Smart_Appliance_Accounts')
+        response = table.query(
+            KeyConditionExpression=Key('deviceid').eq('accounts_id'),
+            FilterExpression=Attr('email').eq(email),
+            ScanIndexForward=False
+        )
+
+        items = response['Items']
+        n=1
+        data = items[:n]
+        # If account exists in accounts table in out database
+        if len(data) > 0:
+            #generate a random string and update user's account
+            letters = string.ascii_letters
+            newPassword = ''.join(random.choice(letters) for i in range(10))
+            # print('new password is' + newPassword)
+            # publish this data to topic 'forgotpassword' which trigger a SNS rule 
+            message = {}
+            message['body'] = "Your new password is: " + newPassword
+            my_rpi.publish("forgotpassword", json.dumps(message), 1)
+            # update Smart_Appliance_Accounts Table
+            table = dynamodb.Table('Smart_Appliance_Accounts')
+            response = table.update_item(
+                Key={
+                    'deviceid': 'accounts_id',
+                    'id':data[0]['id'],
+                },
+                UpdateExpression="set password = :p",
+                ExpressionAttributeValues={
+                    ':p':newPassword,
+                },
+                ReturnValues="UPDATED_NEW"
+            )
+            msg = 'Your account password has been successfully updated! The new password is sent to your smartapplianceproject@gmail.com.'
+            return render_template('login.html', msg=msg)
+        else:
+            # Account doesnt exist or username incorrect
+            msg = 'Email does not exist!'
+            return render_template('login.html', msg=msg)
+
 
 @app.route('/content_2.html')
 def washing_machine():
@@ -395,19 +499,8 @@ def washing_machine():
     n = 1
     data_2 = items[:n]
     last_run = data_2[0]
-
-    # # store "stopped" id as initial value for comparison with readWashingValuesAPI
-    # global stopped_status_id 
-    # stopped_status_id = data[0]["id"]
-    # print(stopped_status_id)
-
     return render_template('content_2.html', status=status, last_run=last_run, minutes=minutes, seconds=seconds)
 
-# def gen(camera):
-#     while True:
-#         frame = camera.get_frame()
-#         yield (b'--frame\r\n'
-#             b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 @app.route("/readWashingValuesAPI", methods=['GET', 'POST'])
 def readWashingValuesAPI():
@@ -448,24 +541,6 @@ def readWashingValuesAPI():
     n = 1
     data_2 = items[:n]
     last_run_values = data_2[0]["timestamp"]
-
-    # # check if washing status is stopped, if so sound the buzzer
-    # if status_value == "stopped":
-    #     global stopped_status_id
-    #     print(stopped_status_id)
-
-    #     # compare ID
-    #     current_id = status_value[0]["id"]
-    #     print(current_id)
-
-    #     if current_id == stopped_status_id:
-    #         buzzOff()
-
-    #     else:
-    #         buzzOn()
-    #         stopped_status_id = current_id
-            
-
     data_dict = {"status": status_value, "minutes": str(minutes), "seconds":str(seconds), "last_run": last_run_values}
     return(jsonify(data_dict))
 
@@ -482,9 +557,6 @@ def controlAlertAPI(status):
         my_rpi.publish("smart_appliance/remotecontrol", json.dumps(message), 1)
         return status
 
-    
-
-
 # @app.route('/video_feed')
 # def video_feed(): 
 #     return Response(gen(Camera()),
@@ -496,6 +568,7 @@ if __name__ == '__main__':
         print('Server waiting for requests')
         http_server = WSGIServer(('0.0.0.0', 8001), app)
         app.debug = True
+        my_rpi.subscribe("smart_appliance/+", 1, customCallback)
         http_server.serve_forever()
         
 
