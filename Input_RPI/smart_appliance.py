@@ -165,13 +165,11 @@ def action(msg):
         telegram_bot.sendMessage(chat_id, time)
 
     elif command == '/on':
-        buzzOn()
         message = {}
         message['buzzerControl'] = "On"
         my_rpi.publish("smart_appliance/remotecontrol", json.dumps(message), 1)
 
     elif command == '/off':
-        buzzOff()
         message = {}
         message['buzzerControl'] = "Off"
         my_rpi.publish("smart_appliance/remotecontrol", json.dumps(message), 1)
