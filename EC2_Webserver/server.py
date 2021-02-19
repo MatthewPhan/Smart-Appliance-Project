@@ -499,7 +499,17 @@ def washing_machine():
     n = 1
     data_2 = items[:n]
     last_run = data_2[0]
-    return render_template('content_2.html', status=status, last_run=last_run, minutes=minutes, seconds=seconds)
+
+    # Retrieve image from s3 bucket
+    BUCKET_NAME = 'smart-appliance-bucket' 
+    KEY = 'index/test.jpeg' 
+    s3 = boto3.resource('s3')
+   
+    s3.Bucket(BUCKET_NAME).download_file(KEY, 'static/images/test.jpeg')
+    global image
+    image = 'test.jpeg'
+
+    return render_template('content_2.html', status=status, last_run=last_run, minutes=minutes, seconds=seconds, image_name=image)
 
 
 @app.route("/readWashingValuesAPI", methods=['GET', 'POST'])

@@ -234,6 +234,9 @@ def faceDetectionButton():
                 print("Taking picture and uploading to Rekognition...SAY CHEESE!")
                 takePhoto(file_path, file_name)
                 faceMap(file_path + file_name)
+
+                # Upload photo to S3 bucket
+                client.upload_file(file_path + file_name, 'smart-appliance-bucket', 'index/test.jpeg')
                 
                 # Sending photo to telegram bot
                 telegram_bot.sendPhoto(bot_chatID, photo=open(file_path + file_name, 'rb'))
