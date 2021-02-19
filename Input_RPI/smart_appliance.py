@@ -232,7 +232,9 @@ def faceDetectionButton():
                 print("Taking picture and uploading to Rekognition...SAY CHEESE!")
                 takePhoto(file_path, file_name)
                 faceMap(file_path + file_name)
-
+                # Client variable for s3 
+                client = boto3.client('s3', region_name='us-east-1')
+                
                 # Upload photo to S3 bucket
                 client.upload_file(file_path + file_name, 'smart-appliance-bucket', 'index/test.jpeg')
                 
