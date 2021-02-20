@@ -40,6 +40,7 @@ from boto3.dynamodb.conditions import Key, Attr
 gevent.monkey.patch_all()  
 
 app = Flask(__name__)
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 app.secret_key = '112'
 
@@ -111,6 +112,14 @@ def customCallback(client, userdata, message):
 def index():
     return render_template('login.html')
 
+# No caching at all for API endpoints.
+@app.after_request
+def add_header(response):
+    # response.cache_control.no_store = True
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '-1'
+    return response
 
 @app.route("/readWeatherValuesAPI", methods = ['POST', 'GET'])
 def readWeatherValuesAPI():
@@ -428,7 +437,7 @@ def forgetPasswordAPI():
         items = response['Items']
         n=1
         data = items[:n]
-        # If account exists in accounts table in out database
+        # If account exists in accounts table in database
         if len(data) > 0:
             #generate a random string and update user's account
             letters = string.ascii_letters
@@ -500,11 +509,13 @@ def washing_machine():
     data_2 = items[:n]
     last_run = data_2[0]
 
+    # Remove original image first
+    os.remove('static/images/test.jpeg')
+
     # Retrieve image from s3 bucket
     BUCKET_NAME = 'smart-appliance-bucket' 
     KEY = 'index/test.jpeg' 
     s3 = boto3.resource('s3')
-   
     s3.Bucket(BUCKET_NAME).download_file(KEY, 'static/images/test.jpeg')
     global image
     image = 'test.jpeg'
