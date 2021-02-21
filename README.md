@@ -120,41 +120,71 @@ The following steps are similar to Section A but with certain tweaks.
 
 ### C) Creation of DynamoDB Tables
   1. Open the Amazon DynamoDB console and click “Create Table”.
-     ![alt tag](images/image46.png)
+ 
+![alt tag](images/image46.png)
+    
   2. Create the Table “Smart_Appliance_Weather” with the following configuration:
-     ![alt tag](images/image57.png)
+ 
+![alt tag](images/image57.png)
+   
   3. Create the Table “Smart_Appliance_Washing_Machine” with the following configuration:
-     ![alt tag](images/image76.png)
+ 
+![alt tag](images/image76.png)
+    
   4. Create the Table “Smart_Appliance_Accounts” with the following configuration:
-     ![alt tag](images/image3.png)
+  
+![alt tag](images/image3.png)
      
 ### D) Creation of DynamoDB Rules and Roles for each Tables
   1. On the left “IoT Core” dashboard, under “Act” sub-menu, click “Rules”.
-     ![alt tag](images/image26.png)
+  
+![alt tag](images/image26.png)
+     
   2. First, create the “DynamoDB_Weather_Rule” with the following configurations:
-     ![alt tag](images/image56.png)
-     ![alt tag](images/image20.png)
+  
+![alt tag](images/image56.png)
+![alt tag](images/image20.png)
+
   3. Select “Add action”.
-     ![alt tag](images/image55.png)
+ 
+![alt tag](images/image55.png)
+     
   4. Select “Split message into multiple columns of a DynamoDB table (DynamoDBv2)”.
-     ![alt tag](images/image73.png)
+
+![alt tag](images/image73.png)
+     
   5. Select the “Configure Action” button, and choose the Table Name “Smart_Appliance_Weather” for this rule. Click “Add action”.
-     ![alt tag](images/image62.png)
+ 
+![alt tag](images/image62.png)
+
   6. Next, click “Create Rule”. Upon successful creation, you can see the rule created as follows.
-     ![alt tag](images/image61.png)
+
+![alt tag](images/image61.png)
+
   7. Next, create the rule for the Smart_Appliance_Accounts table. Create the “DynamoDB_Weather_Rule” with the following configurations:
-     ![alt tag](images/image7.png)
-     ![alt tag](images/image81.png)
+
+![alt tag](images/image7.png)
+![alt tag](images/image81.png)
+
   8. Select “Add action” and choose “Split message into multiple columns of a DynamoDB table (DynamoDBv2)” (refer to Step 4).
-  9. Select the “Configure Action” button, and choose the Table Name “Smart_Appliance_Accounts” for this rule. Click “Add action”.
-     ![alt tag](images/image15.png)
+
+  10. Select the “Configure Action” button, and choose the Table Name “Smart_Appliance_Accounts” for this rule. Click “Add action”.
+ 
+![alt tag](images/image15.png)
+     
   10. Next, click “Create Rule”. Upon successful creation, you can see the rule created as follows.
-     ![alt tag](images/image14.png)
+  
+![alt tag](images/image14.png)
+     
   11. Lastly, create the rule for the Smart_Appliance_Washing_Machine table. Create the “DynamoDB_Weather_Rule” with the following configurations:
+ 
 ![alt tag](images/image59.png)
+
 ![alt tag](images/image12.png)
+
   12. Select “Add action” and choose “Split message into multiple columns of a DynamoDB table (DynamoDBv2)” (refer to Step 4).
-  13. Select the “Configure Action” button, and choose the Table Name “Smart_Appliance_Washing_Machine” for this rule. Click “Add action”.
+
+  14. Select the “Configure Action” button, and choose the Table Name “Smart_Appliance_Washing_Machine” for this rule. Click “Add action”.
  
 ![alt tag](images/image18.png)
      
@@ -187,9 +217,78 @@ The following steps are similar to Section A but with certain tweaks.
 ### G) Configure AWS Rekognition and S3
   1. Configure AWS rekognition to allow us manage collection containers (which is stores the
 face feature vectors)
-```bash
-aws rekognition create-collection --collection-id family_collection --region us-east-1
-'''
+  ```bash
+  aws rekognition create-collection --collection-id family_collection --region us-east-1
+  ```
+  2.  Create a DynamoDB Table to maintain a reference of the FaceID returned from Rekognition and the full name of the person.
+  ```bash
+     aws dynamodb create-table --table-name family_collection \
+    attribute-definitions
+    AttributeName=RekognitionId,AttributeType=S \ --key-schema
+    AttributeName=RekognitionId,KeyType=HASH \
+    --provisioned-throughput
+    ReadCapacityUnits=1,WriteCapacityUnits=1 \
+    --region us-east-1
+  ```
+  
+  3. Create a bucket to store the images
+  ```
+    aws s3 mb s3://smart-appliance-bucket --region us-east-1
+  ```
+  4. Create a trust and access policy. Note that you should replace aws-region, account-id, and the actual name of the resources (e.g., bucket-name and family_collection) with the name of the resources in your environment.
+  - These two policies allows the AWS Lambda Role (created in step 5) to
+    a) to access the objects from Amazon S3,
+    b) initiate the IndexFaces function of Amazon Rekognition,
+    c) create multiple entries within our Amazon DynamoDB key-value store for a mapping between the FaceId and the person’s full name.
+  - trust-policy.json
+  - access-policy.json
+  
+  5. Create an IAM service role for AWS Lambda, by the following two commands:
+```
+    aws iam create-role --role-name LambdaRekognitionRole --
+    assume-role-policy-document trust-policy.json
+
+    aws iam put-role-policy --role-name LambdaRekognitionRole --
+    policy-name LambdaPermissions --policy-document accesspolicy.json
+```
+
+### H) Configure AWS Lambda for Face-Mapping Detection
+  Create the Lambda function that is triggered every time a new picture is uploaded to Amazon S3. Create the function using the Author from scratch option.
+  1. Search for “Lambda” in the AWS console and select it.
+  2. Enter the following field:
+  3. As seen below, the Lambda function role is created.
+  4. Select “Add trigger”.
+  5. On the configure triggers page, select S3, and the name of your bucket as the trigger. Then configure the Event type and Prefix as shown in the following example. This ensures that your Lambda function is triggered only when new objects that start with a key matching the index/pattern are created within the bucket. Remember to check the “I acknowledge..”.
+  6. Copy and Paste the Lambda_Facemapping.py from into the Function Code.
+  7. Select “Deploy”. Upon successful deployment, “Changes deployed” would be listed.
+  8. Select the “Permission” tab, and click “Edit”.
+  9. Change the “Existing role”, with the Role we created earlier (LambdaRekognitionRole). Click “Save”.
+ 
+ ### I) Create an AWS SNS Topic, Subscribe and Create SNS Rule
+  1. Search the Amazon AWS console for the SNS service, choose “Topics” at the sidebar and select “Create Topic”.
+  2. Choose “Standard” and enter the topic name and display name.
+  3. Take note of the ARN of the topic that is just created.
+  4. On the same page, select the button “Create subscription”
+  5. Under “Create subscription”, select “email” as the option under Protocol. Type in the email account in the endpoint as follows (Note: The email account can be your personal email however our group decided to create a new email for this assignment):
+  6. Head over to the Gmail account and confirm the subscription. Successful confirmation would look like the following picture
+  7. In the AWS IoT console, in the left navigation pane, choose “Act”, then “Create a rule”
+  8. On the Create a rule page, enter the following:
+  9. In ‘Set one or more actions’, choose Add action.
+  10. On the Select an action page, select ‘Send a message as an SNS push notification’, and then click ‘Configure action’.
+  11. On the Configure action page, from the SNS target drop-down list, choose the Amazon SNS topic created earlier ‘forgotpassword’.
+  12. On the Configure action page, create a new role for this rule
+  13. Choose Add action.
+  14. Choose Create rule.
+  15. On the Overview page for the rule, choose the left arrow to return to the AWS IoT dashboard.
+  
+
+
+
+
+
+
+
+
 
 
 
