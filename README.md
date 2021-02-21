@@ -437,6 +437,32 @@ face feature vectors)
   14. Choose Create rule.
   15. On the Overview page for the rule, choose the left arrow to return to the AWS IoT dashboard.
   
+## Running the system 
+  1. After configuring the various AWS services, insert the credentials file for both of the RPI and the EC2 webserver. 
+
+  2. Run the following commands in Input_RPI (Note that populate_s3 should be executed only to insert baseline images):
+```bash
+      python weather.py
+      python smart_appliance.py
+      python populate_s3.py
+```
+ 
+  3. Run the following commands in Output_RPI:
+```bash
+      python output.py
+``` 
+
+  4. Run the following commands on EC2 server:
+```bash
+      sudo -s
+      python server.py
+```   
+
+  5. Use the public DNS IPv4 name on the created instance in EC2 service to access web application 
+   
+   
+
+
 
 
 
