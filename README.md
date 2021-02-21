@@ -121,8 +121,9 @@ The following steps are similar to Section A but with certain tweaks.
   20.  On the next screen, select “Interact”. Copy and paste the REST API endpoint of
 “Smart_Appliance_RPI_Output” into a Notepad as you will need this value later.
 
-### Creation of DynamoDB Tables
+### C) Creation of DynamoDB Tables
   1. Open the Amazon DynamoDB console and click “Create Table”.
+  &nbsp;
      ![alt tag](images/image46.png)
   2. Create the Table “Smart_Appliance_Weather” with the following configuration:
      ![alt tag](images/image57.png)
@@ -130,6 +131,32 @@ The following steps are similar to Section A but with certain tweaks.
      ![alt tag](images/image76.png)
   4. Create the Table “Smart_Appliance_Accounts” with the following configuration:
      ![alt tag](images/image3.png)
+     
+### D) Creation of DynamoDB Rules and Roles for each Tables
+  1. On the left “IoT Core” dashboard, under “Act” sub-menu, click “Rules”.
+  2. First, create the “DynamoDB_Weather_Rule” with the following configurations:
+  3. Select “Add action”.
+  4. Select “Split message into multiple columns of a DynamoDB table (DynamoDBv2)”.
+  5. Select the “Configure Action” button, and choose the Table Name “Smart_Appliance_Weather” for this rule. Click “Add action”.
+  6. Next, click “Create Rule”. Upon successful creation, you can see the rule created as follows.
+  7. Next, create the rule for the Smart_Appliance_Accounts table. Create the “DynamoDB_Weather_Rule” with the following configurations:
+  8. Select “Add action” and choose “Split message into multiple columns of a DynamoDB table (DynamoDBv2)” (refer to Step 4).
+  9. Select the “Configure Action” button, and choose the Table Name “Smart_Appliance_Accounts” for this rule. Click “Add action”.
+  10. Next, click “Create Rule”. Upon successful creation, you can see the rule created as follows.
+  11. Lastly, create the rule for the Smart_Appliance_Washing_Machine table. Create the “DynamoDB_Weather_Rule” with the following configurations:
+  12. Select “Add action” and choose “Split message into multiple columns of a DynamoDB table (DynamoDBv2)” (refer to Step 4).
+  13. Select the “Configure Action” button, and choose the Table Name “Smart_Appliance_Washing_Machine” for this rule. Click “Add action”.
+  14. Next, click “Create Rule”. Upon successful creation, you can see the rule created as follows.
+
+
+
+
+
+
+
+
+     
+ 
 
 
 
