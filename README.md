@@ -93,22 +93,26 @@ The following steps are similar to Section A but with certain tweaks.
   2. In the left navigation pane, click “Manage” to expand it, choose “Things”. Next, click “Create”.
   3. Select “Create a single thing”.
   4. Enter the name “Smart_Appliance_RPI_Output”. Click Next.
+     ![alt tag](images/image75.png)
   5. Select “Create certificate”
   6. Download the following three files:
       a. A certificate for this thing
       b. A public key
       c. A private key
-      
       Then, click “Download” for the root CA.
-      
   7. You will be presented with the following page. Right-click “Amazon Root CA 1” and select “Save link as” to download this root certificate.
   8. Then, click the “Activate” button. You should see “Successfully activated certificate” and the Activate button changes to “Deactivate”.
   9. Click to the next page and select “Register thing”. Upon successfully registering “Smart_Appliance_RPI_Output”, you should see it appear in the table as follows.
+     ![alt tag](images/image32.png)
   10. On the left “IoT Core” dashboard, under the “Secure” sub-menu, select “Policies”.
   11. Select “Create a policy”.
+     ![alt tag](images/image39.png)
   12. Create a new Security Policy for our RPIs with the following configurations:
+     ![alt tag](images/image47.png)
   13. Click “Create”. The policy would be successfully created.
+     ![alt tag](images/image41.png)
   14. Next, we have to attach the security policy to the certificate created for the “Things”. On the left “IoT Core” dashboard, under “Secure” sub-menu, click “Certificates”.
+     ![alt tag](images/image63.png)
   15. The X.509 certificate created earlier is shown as follows. Note that you should select the certificate created for “Smart_Appliance_RPI_Output”. Click the triple dot in the certificate and select “Attach policy”.
   16. Check the “Smart_Appliance_Policy” and click the “Attach” button.
   17. Next, we have to attach the Output RPI “Thing” to the certificate. In the certificates page, select the triple dot beside the Output RPI certificate and click "Attach Thing"
