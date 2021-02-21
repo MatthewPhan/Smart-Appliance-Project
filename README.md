@@ -155,9 +155,57 @@ The following steps are similar to Section A but with certain tweaks.
      ![alt tag](images/image12.png)
   12. Select “Add action” and choose “Split message into multiple columns of a DynamoDB table (DynamoDBv2)” (refer to Step 4).
   13. Select the “Configure Action” button, and choose the Table Name “Smart_Appliance_Washing_Machine” for this rule. Click “Add action”.
+ 
      ![alt tag](images/image18.png)
+     
   14. Next, click “Create Rule”. Upon successful creation, you can see the rule created as follows.
+ 
      ![alt tag](images/image83.png)
+
+### E) EC2 Set-Up
+  1. Navigate to EC2 service in the AWS console
+  2. Find the Launch Instance section in the EC2 dashboard and clock on the orange button to “Launch Instance”.
+  3. Select ‘Amazon Linux 2 AMI (HVM)’ and choose the option for 64-bit (x86)
+  4. For the next step, select ‘t2.micro’ for the instance type. Then click the button ‘Next: Configure Instance Details’ below.
+  5. For configuring instance details, enable the “Auto-assign Public IP” option. Then scroll down to find the “Advanced Details” section and enter the following commands in the “User data” text box. Once done, click the “Next: Add storage” button below the webpage.
+  6. In “Step 4: Add Storage”, do not make any changes and leave everything as default. Click the “Next: Add Tags” button below.
+  7. In “Step 5: Add Tags”, click the “Add Tag” button. Input the key and value according to the table shown below. Once done, click the “Next: Configure Security Group” button.
+  8. In “Step 6: Configure Security Group”. Enable the option “Create a new security group” and input the “Security group name” and “description” text box with the following values:
+  9. Add a rule on top of the default rule. Specify its “Type”, “Protocol”, “Port Range” and “Source” as follows:
+  10. Finally, click the “Review and Launch” button where you will brought to a page that displays a summary of your configurations for your instance. Lastly, click the “Launch” button.
+  11. You will be asked to select an existing key pair or create a new one. Choose the option “Create a new key pair” and specify the key pair name as “Key pair for python web server”. Click the button “Download the key pair” and save the file in a known folder. The key will be used to SSH into the web server. Once downloaded, click “Launch Instances”.
+  12. The instance will then be launched and you will be able to view the instance in the EC2 dashboard.
+  13. Connecting to EC2 via WinSCP
+  14. Download the needed dependencies
+  15. Steps to run which python program
+
+### F) Creation of S3 bucket
+  1. Open the S3 service in AWS console and click on “Create bucket”
+  2. Type “Smart-Appliance-Bucket” as name and select AWS region as “US East 1 (North Virginia)”. Use the default values for the rest of the option. FInally, click the “Create Bucket” button.
+  3. The bucket is then created on the S3 console as shown below
+ 
+### G) Configure AWS Rekognition and S3
+  1. Configure AWS rekognition to allow us manage collection containers (which is stores the
+face feature vectors)
+  ```bash
+  aws rekognition create-collection --collection-id
+family_collection --region us-east-1
+  '''
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
 
 
 
