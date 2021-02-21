@@ -27,11 +27,13 @@ Fritzing Diagram:
 
 Software Checklist:
 EC2 Server Configuration 
--	sudo yum check-update
--	sudo yum install -y amazon-linux-extras
--	sudo amazon-linus-extras enable python3.8
--	sudo yum clean metadata
--	sudo yum install python38 -y
+
+```bash
+sudo yum check-update
+sudo yum install -y amazon-linux-extras
+sudo amazon-linus-extras enable python3.8
+sudo yum clean metadata
+sudo yum install python38 -y
 
 EC2 Server and RPIs
 -	pip install gpiozero
