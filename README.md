@@ -53,39 +53,39 @@ Pip install paho-mqtt
   1. Search for IoT-core service and select it
      ![alt tag](images/image38.png)&nbsp;
   2. In the left navigation pane, click “Manage” to expand it, choose “Things”. Next, click “Create”.
-     ![alt tag](images/image9.png)
+     ![alt tag](images/image9.png)&nbsp;
   3. Select “Create a single thing”.
-     ![alt tag](images/image64.png)
+     ![alt tag](images/image64.png)&nbsp;
   4. Enter the name “Smart_Appliance_RPI_Input”. Click Next.
-     ![alt tag](images/image74.png)
+     ![alt tag](images/image74.png)&nbsp;
   5. Select “Create certificate”.
-     ![alt tag](images/image6.png)
+     ![alt tag](images/image6.png)&nbsp;
   6. Download the following three files:
     • A certificate for this thing
     • A public key
     • A private key
      Then, click “Download” for the root CA.
-     ![alt tag](images/image13.png)
+     ![alt tag](images/image13.png)&nbsp;
   7. You will be presented with the following page. Right-click “Amazon Root CA 1” and select “Save link as” to download this root certificate.
-     ![alt tag](images/image27.png)
+     ![alt tag](images/image27.png)&nbsp;
   8. Then, click the “Activate” button. You should see “Successfully activated certificate” and the Activate button changes to “Deactivate”.
-     ![alt tag](images/image71.png)
+     ![alt tag](images/image71.png)&nbsp;
   9. Click to the next page and select “Register thing”. Upon successfully registering “Smart_Appliance_RPI_Input”, you should see it appear in the table as follows.
-     ![alt tag](images/image51.png)
+     ![alt tag](images/image51.png)&nbsp;
   11. Next, we have to attach the security policy to the certificate created for the “Things”. On the left “IoT Core” dashboard, under “Secure” sub-menu, click “Certificates”.
-     ![alt tag](images/image65.png)
+     ![alt tag](images/image65.png)&nbsp;
   12. The X.509 certificate created earlier is shown as follows. Click the triple dot in the certificate and select “Attach policy”.
-     ![alt tag](images/image69.png)
+     ![alt tag](images/image69.png)&nbsp;
   13. Check the “Smart_Appliance_Policy” and click the “Attach” button.
-     ![alt tag](images/image22.png)
+     ![alt tag](images/image22.png)&nbsp;
   14. Next, we have to attach the “Thing” to the certificate. In the certificates page, select the triple dot beside the certificate and click “Attach thing”.
-     ![alt tag](images/image34.png)
+     ![alt tag](images/image34.png)&nbsp;
   15. In the “Attach things to certificate(s)” dialog box, select the check box next to the thing that was created “Smart_Appliance_RPI_Input”, and click “Attach”.
-     ![alt tag](images/image37.png)
+     ![alt tag](images/image37.png)&nbsp;
   16. On the left “IoT Core” dashboard under “Manage” sub-menu, click “Things”.
-     ![alt tag](images/image45.png)
+     ![alt tag](images/image45.png)&nbsp;
   17. On the next screen, select “Interact”. Copy and paste the REST API endpoint of “Smart_Appliance_RPI_Input” into a Notepad as you will need this value later.
-     ![alt tag](images/image29.png)
+     ![alt tag](images/image29.png)&nbsp;
 
 ### B) Register “Smart_Appliance_RPI_Output” Raspberry Pi as a Thing in AWS
 The following steps are similar to Section A but with certain tweaks.
