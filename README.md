@@ -133,20 +133,34 @@ The following steps are similar to Section A but with certain tweaks.
      
 ### D) Creation of DynamoDB Rules and Roles for each Tables
   1. On the left “IoT Core” dashboard, under “Act” sub-menu, click “Rules”.
+     ![alt tag](images/image26.png)
   2. First, create the “DynamoDB_Weather_Rule” with the following configurations:
+     ![alt tag](images/image56.png)
+     ![alt tag](images/image20.png)
   3. Select “Add action”.
+     ![alt tag](images/image55.png)
   4. Select “Split message into multiple columns of a DynamoDB table (DynamoDBv2)”.
+     ![alt tag](images/image73.png)
   5. Select the “Configure Action” button, and choose the Table Name “Smart_Appliance_Weather” for this rule. Click “Add action”.
+     ![alt tag](images/image62.png)
   6. Next, click “Create Rule”. Upon successful creation, you can see the rule created as follows.
+     ![alt tag](images/image61.png)
   7. Next, create the rule for the Smart_Appliance_Accounts table. Create the “DynamoDB_Weather_Rule” with the following configurations:
+     ![alt tag](images/image7.png)
+     ![alt tag](images/image81.png)
   8. Select “Add action” and choose “Split message into multiple columns of a DynamoDB table (DynamoDBv2)” (refer to Step 4).
   9. Select the “Configure Action” button, and choose the Table Name “Smart_Appliance_Accounts” for this rule. Click “Add action”.
+     ![alt tag](images/image15.png)
   10. Next, click “Create Rule”. Upon successful creation, you can see the rule created as follows.
+     ![alt tag](images/image14.png)
   11. Lastly, create the rule for the Smart_Appliance_Washing_Machine table. Create the “DynamoDB_Weather_Rule” with the following configurations:
+     ![alt tag](images/image59.png)
+     ![alt tag](images/image12.png)
   12. Select “Add action” and choose “Split message into multiple columns of a DynamoDB table (DynamoDBv2)” (refer to Step 4).
   13. Select the “Configure Action” button, and choose the Table Name “Smart_Appliance_Washing_Machine” for this rule. Click “Add action”.
+     ![alt tag](images/image18.png)
   14. Next, click “Create Rule”. Upon successful creation, you can see the rule created as follows.
-
+     ![alt tag](images/image83.png)
 
 
 
