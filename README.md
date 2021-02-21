@@ -104,29 +104,19 @@ The following steps are similar to Section A but with certain tweaks.
   8. Then, click the “Activate” button. You should see “Successfully activated certificate” and the Activate button changes to “Deactivate”.
   9. Click to the next page and select “Register thing”. Upon successfully registering “Smart_Appliance_RPI_Output”, you should see it appear in the table as follows.
      ![alt tag](images/image32.png)
-  10. On the left “IoT Core” dashboard, under the “Secure” sub-menu, select “Policies”.
-  11. Select “Create a policy”.
+  10. Next, we have to attach the security policy to the certificate created for the “Things”. On the left “IoT Core” dashboard, under “Secure” sub-menu, click “Certificates”.
+  11. The X.509 certificate created earlier is shown as follows. Note that you should select the certificate created for “Smart_Appliance_RPI_Output”. Click the triple dot in the certificate and select “Attach policy”.
      ![alt tag](images/image39.png)
-  12. Create a new Security Policy for our RPIs with the following configurations:
+  12. Check the “Smart_Appliance_Policy” and click the “Attach” button.
      ![alt tag](images/image47.png)
-  13. Click “Create”. The policy would be successfully created.
+  13. Next, we have to attach the Output RPI “Thing” to the certificate. In the certificates page, select the triple dot beside the Output RPI certificate and click "Attach Thing"
+     ![alt tag](images/image42.png)
+  14. In the “Attach things to certificate(s)” dialog box, select the check box next to the thing that was created “Smart_Appliance_RPI_Output”, and click “Attach”.
      ![alt tag](images/image41.png)
-  14. Next, we have to attach the security policy to the certificate created for the “Things”. On the left “IoT Core” dashboard, under “Secure” sub-menu, click “Certificates”.
-     ![alt tag](images/image63.png)
-
-  15. The X.509 certificate created earlier is shown as follows. Note that you should select the certificate created for “Smart_Appliance_RPI_Output”. Click the triple dot in the certificate and select “Attach policy”.
- 
-  16. Check the “Smart_Appliance_Policy” and click the “Attach” button.
-  
-  17. Next, we have to attach the Output RPI “Thing” to the certificate. In the certificates page, select the triple dot beside the Output RPI certificate and click "Attach Thing"
-  
-  18.  In the “Attach things to certificate(s)” dialog box, select the check box next to the thing that as created “Smart_Appliance_RPI_Output”, and click “Attach”.
-
-  19.  Next, on the left “IoT Core” dashboard under “Manage” sub-menu, click “Things”.
-  
-  20.  On the next screen, select “Interact”. Copy and paste the REST API endpoint of
+  15. Next, on the left “IoT Core” dashboard under “Manage” sub-menu, click “Things”.
+  16. On the next screen, select “Interact”. Copy and paste the REST API endpoint of
 “Smart_Appliance_RPI_Output” into a Notepad as you will need this value later.
-
+     ![alt tag](images/image63.png)
 
 ### C) Creation of DynamoDB Tables
   1. Open the Amazon DynamoDB console and click “Create Table”.
