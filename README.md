@@ -300,9 +300,17 @@ The following steps are similar to Section A but with certain tweaks.
 
 ### F) Creation of S3 bucket
   1. Open the S3 service in AWS console and click on “Create bucket”
+
+![alt tag](images/image2.png)
+
   2. Type “Smart-Appliance-Bucket” as name and select AWS region as “US East 1 (North Virginia)”. Use the default values for the rest of the option. FInally, click the “Create Bucket” button.
+
+![alt tag](images/image68.png)
+
   3. The bucket is then created on the S3 console as shown below
- 
+
+![alt tag](images/image5.png)
+
 ### G) Configure AWS Rekognition and S3
   1. Configure AWS rekognition to allow us manage collection containers (which is stores the
 face feature vectors)
@@ -330,7 +338,12 @@ face feature vectors)
     b) initiate the IndexFaces function of Amazon Rekognition,
     c) create multiple entries within our Amazon DynamoDB key-value store for a mapping between the FaceId and the person’s full name.
   - trust-policy.json
+
+![alt tag](images/image4.png)
+
   - access-policy.json
+
+![alt tag](images/image25.png)
   
   5. Create an IAM service role for AWS Lambda, by the following two commands:
 ```
@@ -345,27 +358,78 @@ face feature vectors)
   Create the Lambda function that is triggered every time a new picture is uploaded to Amazon S3. Create the function using the Author from scratch option.
   1. Search for “Lambda” in the AWS console and select it.
   2. Enter the following field:
+
+![alt tag](images/image43.png)
+
   3. As seen below, the Lambda function role is created.
+
+![alt tag](images/image31.png)
+
   4. Select “Add trigger”.
+
+![alt tag](images/image82.png)
+
   5. On the configure triggers page, select S3, and the name of your bucket as the trigger. Then configure the Event type and Prefix as shown in the following example. This ensures that your Lambda function is triggered only when new objects that start with a key matching the index/pattern are created within the bucket. Remember to check the “I acknowledge..”.
+
+![alt tag](images/image70.png)
+
   6. Copy and Paste the Lambda_Facemapping.py from into the Function Code.
   7. Select “Deploy”. Upon successful deployment, “Changes deployed” would be listed.
+
+![alt tag](images/image11.png)
+
   8. Select the “Permission” tab, and click “Edit”.
+
+![alt tag](images/image40.png)
+
   9. Change the “Existing role”, with the Role we created earlier (LambdaRekognitionRole). Click “Save”.
- 
+
+![alt tag](images/image50.png)
+
  ### I) Create an AWS SNS Topic, Subscribe and Create SNS Rule
   1. Search the Amazon AWS console for the SNS service, choose “Topics” at the sidebar and select “Create Topic”.
+
+![alt tag](images/image44.png)
+
   2. Choose “Standard” and enter the topic name and display name.
+
+![alt tag](images/image66.png)
+
   3. Take note of the ARN of the topic that is just created.
+
+![alt tag](images/image60.png)
+
   4. On the same page, select the button “Create subscription”
+
+![alt tag](images/image33.png)
+
   5. Under “Create subscription”, select “email” as the option under Protocol. Type in the email account in the endpoint as follows (Note: The email account can be your personal email however our group decided to create a new email for this assignment):
+
+![alt tag](images/image19.png)
+
   6. Head over to the Gmail account and confirm the subscription. Successful confirmation would look like the following picture
+
+![alt tag](images/image48.png)
+
   7. In the AWS IoT console, in the left navigation pane, choose “Act”, then “Create a rule”
   8. On the Create a rule page, enter the following:
+
+![alt tag](images/image10.png)
+![alt tag](images/image23.png)
+
   9. In ‘Set one or more actions’, choose Add action.
   10. On the Select an action page, select ‘Send a message as an SNS push notification’, and then click ‘Configure action’.
+
+![alt tag](images/image72.png)
+
   11. On the Configure action page, from the SNS target drop-down list, choose the Amazon SNS topic created earlier ‘forgotpassword’.
+
+![alt tag](images/image8.png)
+
   12. On the Configure action page, create a new role for this rule
+
+![alt tag](images/image35.png)
+
   13. Choose Add action.
   14. Choose Create rule.
   15. On the Overview page for the rule, choose the left arrow to return to the AWS IoT dashboard.
