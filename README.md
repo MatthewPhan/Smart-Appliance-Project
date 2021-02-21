@@ -1,12 +1,10 @@
 # Smart-Appliance-Project
 
 ## Quick-Start Guide:
-1)	First configure the various AWS services and roles (Refer to Section 3 - Software setup instructions) 
-2)	Update the credentials file on both the input and output RPi as well as the EC2 webserver
-3)	Run weather.py and smart_appliance.py on the input RPI
-4)	Run output.py on output RPI
-5)	Run populate_s3.py to populate baseline images to the S3 bucket (Note: Baseline images should be in the same folder as well)
-6)	Run the ‘sudo -s’ command on the EC2 server before running the server.py file
+1)	Replicate the hardware setup based on the fritzing diagram 
+2)	Install relevant dependencies as shown below
+3)	Follow software setup guide 
+4)	Run the application 
 
 ## Hardware checklist:
 -	1 DHT11 sensor
