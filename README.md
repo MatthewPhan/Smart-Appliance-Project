@@ -121,6 +121,12 @@ The following steps are similar to Section A but with certain tweaks.
   20.  On the next screen, select “Interact”. Copy and paste the REST API endpoint of
 “Smart_Appliance_RPI_Output” into a Notepad as you will need this value later.
 
+### Creation of DynamoDB Tables
+  1. Open the Amazon DynamoDB console and click “Create Table”.
+  2. Create the Table “Smart_Appliance_Weather” with the following configuration:
+  3. Create the Table “Smart_Appliance_Washing_Machine” with the following configuration:
+  4. Create the Table “Smart_Appliance_Accounts” with the following configuration:
+
 
 
 
