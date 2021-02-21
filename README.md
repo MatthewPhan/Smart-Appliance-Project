@@ -69,7 +69,7 @@ Pip install paho-mqtt
   7. You will be presented with the following page. Right-click “Amazon Root CA 1” and select “Save link as” to download this root certificate.
      ![alt tag](images/image27.png)&nbsp;
   8. Then, click the “Activate” button. You should see “Successfully activated certificate” and the Activate button changes to “Deactivate”.
-     ![alt tag](images/image71.png)&nbsp;
+     ![alt tag](images/image71.png)
   9. Click to the next page and select “Register thing”. Upon successfully registering “Smart_Appliance_RPI_Input”, you should see it appear in the table as follows.
      ![alt tag](images/image51.png)&nbsp;
   11. Next, we have to attach the security policy to the certificate created for the “Things”. On the left “IoT Core” dashboard, under “Secure” sub-menu, click “Certificates”.
