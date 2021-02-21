@@ -123,7 +123,8 @@ The following steps are similar to Section A but with certain tweaks.
 
 ### C) Creation of DynamoDB Tables
   1. Open the Amazon DynamoDB console and click “Create Table”.
-  &nbsp;
+&nbsp;
+&nbsp;
      ![alt tag](images/image46.png)
   2. Create the Table “Smart_Appliance_Weather” with the following configuration:
      ![alt tag](images/image57.png)
