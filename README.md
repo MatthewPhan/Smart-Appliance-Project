@@ -51,7 +51,7 @@ Pip install paho-mqtt
 ## Software setup instructions:
 ### A) Register “Smart_Appliance_RPI_Input” Raspberry Pi as a Thing in AWS
   1. Search for IoT-core service and select it
-     ![alt tag](images/image38.png) <br />
+     ![alt tag](images/image38.png)&nbsp;
   2. In the left navigation pane, click “Manage” to expand it, choose “Things”. Next, click “Create”.
      ![alt tag](images/image9.png)
   3. Select “Create a single thing”.
