@@ -151,16 +151,16 @@ The following steps are similar to Section A but with certain tweaks.
   10. Next, click “Create Rule”. Upon successful creation, you can see the rule created as follows.
      ![alt tag](images/image14.png)
   11. Lastly, create the rule for the Smart_Appliance_Washing_Machine table. Create the “DynamoDB_Weather_Rule” with the following configurations:
-     ![alt tag](images/image59.png)
-     ![alt tag](images/image12.png)
+![alt tag](images/image59.png)
+![alt tag](images/image12.png)
   12. Select “Add action” and choose “Split message into multiple columns of a DynamoDB table (DynamoDBv2)” (refer to Step 4).
   13. Select the “Configure Action” button, and choose the Table Name “Smart_Appliance_Washing_Machine” for this rule. Click “Add action”.
  
-     ![alt tag](images/image18.png)
+![alt tag](images/image18.png)
      
   14. Next, click “Create Rule”. Upon successful creation, you can see the rule created as follows.
- 
-     ![alt tag](images/image83.png)
+  
+![alt tag](images/image83.png)
 
 ### E) EC2 Set-Up
   1. Navigate to EC2 service in the AWS console
@@ -187,10 +187,9 @@ The following steps are similar to Section A but with certain tweaks.
 ### G) Configure AWS Rekognition and S3
   1. Configure AWS rekognition to allow us manage collection containers (which is stores the
 face feature vectors)
-  ```bash
-  aws rekognition create-collection --collection-id
-family_collection --region us-east-1
-  '''
+```bash
+aws rekognition create-collection --collection-id family_collection --region us-east-1
+'''
 
 
 
