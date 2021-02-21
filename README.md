@@ -73,6 +73,8 @@ Pip install paho-mqtt
   9. Click to the next page and select “Register thing”. Upon successfully registering “Smart_Appliance_RPI_Input”, you should see it appear in the table as follows.
      ![alt tag](images/image51.png)
   10. On the left “IoT Core” dashboard, under the “Secure” sub-menu, select “Policies”.
+
+
      ![alt tag](images/image78.png)
   11. Select “Create a policy”.
      ![alt tag](images/image16.png)
@@ -95,7 +97,7 @@ Pip install paho-mqtt
   20. On the next screen, select “Interact”. Copy and paste the REST API endpoint of “Smart_Appliance_RPI_Input” into a Notepad as you will need this value later.
      ![alt tag](images/image29.png)
 
-
+### B) Register “Smart_Appliance_RPI_Output” Raspberry Pi as a Thing in AWS
 
 
 
