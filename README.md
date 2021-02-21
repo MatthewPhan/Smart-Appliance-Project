@@ -113,7 +113,7 @@ The following steps are similar to Section A but with certain tweaks.
      ![alt tag](images/image41.png)
   14. Next, we have to attach the security policy to the certificate created for the “Things”. On the left “IoT Core” dashboard, under “Secure” sub-menu, click “Certificates”.
      ![alt tag](images/image63.png)
-  ```
+
   15. The X.509 certificate created earlier is shown as follows. Note that you should select the certificate created for “Smart_Appliance_RPI_Output”. Click the triple dot in the certificate and select “Attach policy”.
  
   16. Check the “Smart_Appliance_Policy” and click the “Attach” button.
@@ -126,7 +126,7 @@ The following steps are similar to Section A but with certain tweaks.
   
   20.  On the next screen, select “Interact”. Copy and paste the REST API endpoint of
 “Smart_Appliance_RPI_Output” into a Notepad as you will need this value later.
-```
+
 
 ### C) Creation of DynamoDB Tables
   1. Open the Amazon DynamoDB console and click “Create Table”.
