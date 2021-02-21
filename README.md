@@ -23,7 +23,10 @@
 2)	The BMP-180 pressure sensor has 4 pins namely the SDA, SCL, GND and VCC pins. Connect the jumper wires accordingly and connect it to the SDA, SCL and GND pins on the breadboard. As for the VCC pin it is also recommended to use 3.3V.
 
 ## Fritzing Diagram:
+![alt tag](images/CA2_Assignment_Fritzing_Diagram.png)
 
+## System Architecture Diagram:
+![alt tag](images/Official_Smart_Appliance_System_Architecture.png)
 
 ## Software Checklist:
 ### EC2 Server Configuration 
