@@ -1,5 +1,28 @@
 # Smart-Appliance-Project
 
+The application consists of two parts. The first part is a mini weather station that allows the user to
+check the real-time and historical values of the surrounding temperature, humidity and atmospheric
+pressure. The second part is a smart washing machine which tracks the vibration motion of the
+washing machine notifying the user when the laundry is done. The user is also able to remotely see
+how long the washing machine has been running for and remotely control a buzzer to notify other
+people to take the laundry out. The system comprises of two RPIs. One of the RPI comprises of all the
+sensors which reads the various values while the other RPI is to act as an alert system. This RPI can
+be placed anywhere in the house. When the washing cycle is completed, it will alert the user
+automatically. There is a facial recognition service which also alerts the homeowner when someone
+takes out the clothes, sending the homeowner the photo of the person and identifying the name of
+the person who took out the laundry. Thus, the target audience would be people that frequently do
+household chores. There are times when we forget to take out clothes from the washer and the wet
+clothes will start to develop a smell after awhile. Thus, having a notification system would be useful
+as there isn’t a need to solely rely on the sound of the washer which lasts only a few seconds or if the
+user is not at home he/she can alert others to take it out. The mini weather station complements the
+application as the user is able to check the weather values and determine if it’s a good time to hang
+out the clothes. The application also allows the user to chat with a telegram bot to do various things
+such as remotely checking the weather values, status of washing machine, when the clothes was last
+washed and remotely control the buzzer instead of solely relying on the web interface for those
+purposes. 
+
+For more information, you may visit our youtube video: https://youtu.be/Q7rKpXyAia0
+
 ## Quick-Start Guide:
 1)	Replicate the hardware setup based on the fritzing diagram 
 2)	Install relevant dependencies as shown below
